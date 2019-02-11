@@ -24,8 +24,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         table_view.delegate = self
         
         // Do any additional setup after loading the view, typically from a nib.
-        print("Hello")
-        
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -71,6 +69,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.poster_view.af_setImage(withURL: poster_url!)
         
         return cell
+    }
+    
+    // For leaving screen, prepare next screen
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Find the selected movie
+        let cell = sender as! UITableViewCell
+        let index_path = table_view.indexPath(for: cell)!
+        let movie = movies[index_path.row]
+        
+        // Pass the selected movie to the details view controller
+        let details_view_controller = segue.destination as! MovieDetailsViewController
+        
+        details_view_controller.movie = movie
+        
+        // Deselect row/movie
+        table_view.deselectRow(at: index_path, animated: true)
     }
 }
 
